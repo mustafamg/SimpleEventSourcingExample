@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Specialized;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Newtonsoft.Json;
@@ -16,7 +17,7 @@ namespace CommandConsumer
         [FunctionName("Function1")]
         public static void Run([QueueTrigger("CommandsQueue", Connection = "")]string serializedCommand, TraceWriter log)
         {
-            var command = JsonConvert.DeserializeObject<Models.Command<int>>(serializedCommand);
+            var command = JsonConvert.DeserializeObject<Models.RestfulCommand>(serializedCommand);
             
             log.Info($"Use httpClient to call url '{command.Uri}' using '{command.Verb}' action with the following data in '{command.Verb}' Body:");
             

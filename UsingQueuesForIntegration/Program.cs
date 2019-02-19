@@ -32,26 +32,27 @@ namespace UsingQueuesForIntegration
 
         }
 
-        private static Command<int> CreateGeneralLedgerCommand()
+        private static RestfulCommand CreateGeneralLedgerCommand()
         {
-            return new Command<int>()
+            var command = new RestfulCommand()
             {
                 NumberOfTries = 0,
                 Uri = "http://localhost:5555/GeneralLedger",
-                Verb = HttpVerb.Post,
-                Argument = new Random(DateTime.Now.Millisecond).Next(int.MaxValue)
+                Verb = HttpVerb.Post
             };
+            command.Argument.Add("OrderNumber", new Random(DateTime.Now.Millisecond).Next(int.MaxValue).ToString());
+            return command;
         }
 
-        private static CloudQueueMessage CreateQueuMessage(Command<int> command)
+        private static CloudQueueMessage CreateQueuMessage(RestfulCommand<int> command)
         {
             var serializedCommand = JsonConvert.SerializeObject(command);
             return new CloudQueueMessage(serializedCommand);
         }
 
-        private static Command<int> CreateOrderCommand()
+        private static RestfulCommand<int> CreateOrderCommand()
         {
-            return new Command<int>()
+            return new RestfulCommand<int>()
             {
                 NumberOfTries = 0,
                 Uri = "http://localhost:5555/Orders",
